@@ -14,7 +14,7 @@ This section is blank at the moment.
 ### Class: Tile
 All visible game objects (including background, buildings, etc) inherit from the Tile class. Static tiles use this class directly. Inherits from [_pygame.sprite.Sprite_](http://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite).
 
-##### Constructor and Magics
+##### Constructor
 * \_\_init\_\_(x, y, img) - Initializes vars.
 
 #### Vars
@@ -30,7 +30,7 @@ All visible game objects (including background, buildings, etc) inherit from the
 Contains an array of Tiles objects that represents the map for the game. Will return the final surface object for drawing on the screen. Also includes much of the funtional code for the tiler.
 
 
-##### Constructor and Magics
+##### Constructor
 * \_\_init\_\_(x, y, tile_size) - Initializes vars.
 
 #### Vars
@@ -46,15 +46,18 @@ Contains an array of Tiles objects that represents the map for the game. Will re
 ### Class: World
 When initialized it will create a world of the specified dimensions and launch the PyGame window. This will be an empty PyGame window, as no content has been added to it. You may then preload sprites, and then run the world.
 
+#### Constructor
+* \_\_init\_\_(x, y, grid, background_color = BLACK) - Initializes vars.
+
 #### Vars
 
-* sizeX - The x dimension of the screen in pixels.
-* sizeY - The y dimension of the screen in pixels.
+* size_x - The x dimension of the screen in pixels.
+* size_y - The y dimension of the screen in pixels.
 * grid - The world in grid squares.
 * background_image - Contains the image of the world background. 
-* backgroundX - The x offset for the background image. 
-* backgroundY - The y offset for the backkound image. 
-* backgroundColor - Base color of the PyGame form. 
+* background_x - The x offset for the background image. 
+* background_y - The y offset for the backkound image. 
+* background_color - Base color of the PyGame form. 
 
 #### Methods
 * setTitle(title) - Sets the PyGame window title.
