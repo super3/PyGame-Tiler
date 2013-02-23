@@ -9,7 +9,7 @@ A simplistic 2D tile engine built with PyGame, designed to run as the base of my
 ## Features 
 This section is blank at the moment.
 
-## Grid Module
+## World Module
 
 ### Class: Tile
 All visible game objects (including background, buildings, etc) inherit from the Tile class. Static tiles use this class directly. Inherits from [_pygame.sprite.Sprite_](http://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite).
@@ -40,3 +40,25 @@ Contains an array of Tiles objects that represents the map for the game. Will re
 
 #### Methods
 * fill(tile) - Fill the grid with the specified tile.
+
+---
+
+### Class: World
+When initialized it will create a world of the specified dimensions and launch the PyGame window. This will be an empty PyGame window, as no content has been added to it. You may then preload sprites, and then run the world.
+
+#### Vars
+
+* sizeX - The x dimension of the screen in pixels.
+* sizeY - The y dimension of the screen in pixels.
+* grid - The world in grid squares.
+* background_image - Contains the image of the world background. 
+* backgroundX - The x offset for the background image. 
+* backgroundY - The y offset for the backkound image. 
+* backgroundColor - Base color of the PyGame form. 
+
+#### Methods
+* setTitle(title) - Sets the PyGame window title.
+* setIcon(path) - Sets the PyGame window icon.
+* loadMusic(path) - Starts playing some background music.
+* move(direction, speed) - Moves the view window.
+* run(self) - Launches the world. 
