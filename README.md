@@ -6,12 +6,12 @@ A simplistic 2D tile engine built with PyGame, designed to run as the base of my
 * Website - [http://super3.org](http://super3.org)
 * Source Code - [https://github.com/super3/PyGame-Tiler](https://github.com/super3/IRC-Bot)
 
-### Features 
-This section is intentionally left blank.
+## Features 
+This section is blank at the moment.
 
-### Grid Module
+## Grid Module
 
-#### Class: Tile
+### Class: Tile
 All visible game objects (including background, buildings, etc) inherit from the Tile class. Static tiles use this class directly. Inherits from [_pygame.sprite.Sprite_](http://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite).
 
 ##### Constructor and Magics
@@ -24,8 +24,9 @@ All visible game objects (including background, buildings, etc) inherit from the
 ### Methods
 * render(screen) - Blit tile on a surface. 
 
+---
 
-#### Class: Grid
+### Class: Grid
 Contains an array of Tiles objects that represents the map for the game. Will return the final surface object for drawing on the screen. Also includes much of the funtional code for the tiler.
 
 
@@ -38,4 +39,4 @@ Contains an array of Tiles objects that represents the map for the game. Will re
 * tile_size - Square pixel size of each tile. 
 
 #### Methods
-* fill(tile) - Fill the grid with the specified tile. s
+* fill(tile) - Fill the grid with the specified tile.
