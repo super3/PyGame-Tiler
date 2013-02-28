@@ -15,14 +15,20 @@ This section is blank at the moment.
 All visible game objects (including background, buildings, etc) inherit from the Tile class. Static tiles use this class directly. Inherits from [_pygame.sprite.Sprite_](http://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite).
 
 ##### Constructor
-* \_\_init\_\_(x, y, img) - Initializes vars.
+* \_\_init\_\_(self, img_path, size, location) - Initializes vars.
+
+	* img\_path - File path to the tile image.
+	* size - 2-tuple of the tile size. ex.(width, height)
+	* location - 2-tuple of the tile screen location ex(x,y)
+
 
 #### Vars
-* image - Tile image.
-* rect - Bounds and location of tile in world.
+* image - Contains the sprite image (usually imported as a .PNG)
+* rect.x - Coordinate X of the sprite (measured from the left edge)
+* rect.y - Coordinate Y of the sprite (measured from the top edge)
 
 ### Methods
-* render(screen) - Blit tile on a surface. 
+* render(screen) - Blit tile onto a passed surface. 
 
 ---
 

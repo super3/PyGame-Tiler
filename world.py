@@ -13,59 +13,59 @@
 # ------------------------------------------------------------
 
 # System Imports
-import pygame, os
-from helper import *
+import os
+import pygame
+
+# Define Basic Colors
+BLACK = [0, 0 ,0]
+WHITE = [255, 255, 255]
+BLUE = [ 0, 0 , 255]
+GREEN = [ 0, 255, 0]
+RED = [255, 0, 0]
+ALPHA = [255, 0, 238]
 
 class Tile(pygame.sprite.Sprite):
 	"""
-	Basic PyGame Sprite Class.
-	Pretty much every sprite should be derived from this.
-	Static/immovable objects should use this class directly.
+	All visible game objects (including background, buildings, etc) inherit from the Tile class.
+	Static tiles use this class directly. Static/immovable objects should use this class directly.
 	
 	Data members:
 	image -- Contains the sprite image (usually imported as a .PNG)
 			 Will later be expanded as an array with multiple image
 			 so it can support animation
-	rect -- Contains the bounds of the loaded image
 	rect.x -- Coordinate X of the sprite (measured from the left edge)
-	rect.y -- Coordinate Y of the sprite (measured from the bottom edge initially and then as PyGame )
+	rect.y -- Coordinate Y of the sprite (measured from the top edge)
+
 	"""
-	def __init__(self, x, y, img):
+	def __init__(self, img_path, size, location):
 		# Call the parent class (Sprite) constructor 
 		pygame.sprite.Sprite.__init__(self)
 		
-		# Load the image, if it does not exist try to load the error image. 
-		if fileExists( img, "Block Class Image"):
+		# Load the image, if it does not exist try to load the error image
+		if os.path.exists( img_path ):
 			# Create an image and remove background
-			tmpImage = pygame.image.load(img)
+			tmp_image = pygame.image.load(img_path)
 		else:
-			tmpImage = pygame.image.load('view/tiles/error.png')
-
-		# Takes World Dimentions
-		worldX = worldDim[0]
-		worldY = worldDim[1]
-		groundHeight = worldDim[2]
+			tmp_image = pygame.Surface(size)
 
 		# Sets .PNG transparency to PyGame transparency
-		self.image = tmpImage.convert_alpha() 
+		self.image = tmp_image.convert_alpha() 
+
 		# Set bounds
 		self.rect = self.image.get_rect()
+		# Check Image Dimentions
+		if not self.image.get_size == size: raise 
 		# Set draw location
-		self.rect.x = locX
-		self.rect.y = worldY - (locY + self.rect.height) - groundHeight
+		self.rect.x = location[0]
+		self.rect.y = location[1]
+
 	def render(self, screen):
 		screen.blit(self.image, [self.rect.x, self.rect.y])
-
-	def Tile(pygame.sprite.Sprite):
-		pass
-
-	def Grid(pygame.sprite.Sprite):
-		pass
 
 # World Class
 class World:
 	"""A class for the creation of a PyGame 2D grid world."""
-	def __init__(self, x, y, worldX, worldY, gridSize):
+	def __init__(self, screen_size, world_grid_size, grid_size):
 		"""
 		When initialized it will create a world of the specified dimensions
 		and launch the PyGame window. This will be an empty PyGame window,
@@ -75,10 +75,8 @@ class World:
 	    Arguments/Data members:
 	    sizeX -- The x dimension of the screen in pixels.
 	    sizeY -- The y dimension of the screen in pixels.
-	    gridX -- The x dimension of the world in grid squares.
-	    gridY -- The y dimension of the world in grid squares.
-	    worldX -- The x dimension of the world in pixels.
-	    worldY -- The y dimension of the world in pixels.
+	    worldX -- The x dimension of the world in tiles.
+	    worldY -- The y dimension of the world in tiles.
 	    gridSize -- The square dimension of a grid square in pixels.
 	   	background_image -- Contains the image of the world background. 
 			Althought it will not return an error, the background image resolution 
@@ -97,18 +95,17 @@ class World:
 		self.sizeX = x
 		self.sizeY = y
 
-		self.gridX = gridX
-		self.gridY = gridY
+		self.gridX = worldX
+		self.gridY = worldY
 		self.gridSize = gridSize
-		self.worldX = gridX * gridSize
-		self.worldY = gridY * gridSize
+		self.worldX =  worldX * gridSize
+		self.worldY = worldY * gridSize
 
 		self.background_image = None
 		self.backgroundX = 0 
 		self.backgroundY = 0
 
-		# Extra Data Members
-		# Basically Some Render Settings
+		# Render Settings
 		self.backgroundColor = BLACK
 		self.fps = 30
 		self.scrollSpeed = 10
@@ -127,18 +124,18 @@ class World:
 		self.sprites = pygame.sprite.RenderPlain()
 		
 		# Debug Messages
-		printDebug("World Initialized.")
-		printDebug("Screen Size: " + str(x) + "x" + str(y) + ".")
-		printDebug("World Size: " + str(self.worldX) + "x" + str(self.worldY) + ".")
-		printDebug("Grid Size: " + str(gridX) + "x" + str(gridY) + ".")
-		printDebug("Grid Square Size: " + str(gridSize) + "px.")
+		print("World Initialized.")
+		print("Screen Size: " + str(x) + "x" + str(y) + ".")
+		print("World Size: " + str(self.worldX) + "x" + str(self.worldY) + ".")
+		print("Grid Size: " + str(gridX) + "x" + str(gridY) + ".")
+		print("Grid Square Size: " + str(gridSize) + "px.")
 
 	def setTitle(self, title):
 		"""Sets the PyGame window title"""
 		pygame.display.set_caption(str(title))
 		
 		# Debug Message
-		printDebug("Title Set: '" + str(title) + "'.")
+		print("Title Set: '" + str(title) + "'.")
 		
 	def setIcon(self, path):
 		"""
@@ -159,7 +156,7 @@ class World:
 				for j in range(0,32):
 					icon.set_at((i,j), rawicon.get_at((i,j)))
 			pygame.display.set_icon(icon)
-			printDebug("Icon Set: '" + str(path) + "'.")
+			print("Icon Set: '" + str(path) + "'.")
 
 	def loadMusic(self, path):
 		"""Sets the background music for the world. Src argument is the path
@@ -167,7 +164,7 @@ class World:
 		# Seems to crash with view/sound/backgound2.mpg, perhaps because of the 
 		# cover art that seems to be embedded into the .mp3
 		if fileExists( path, "Background Music"):
-			printDebug("Background Music Started.")
+			print("Background Music Started.")
 			pygame.mixer.music.load(path)
 			pygame.mixer.music.play(-1, 0.0)
 
@@ -205,7 +202,7 @@ class World:
 			for event in pygame.event.get(): 
 				# Quit Game
 				if event.type == pygame.QUIT:
-					printDebug("PyGame.Quit Called.")
+					print("PyGame.Quit Called.")
 					self.done = True
 						
 			# Check for Keys
@@ -240,7 +237,12 @@ class World:
 		# End Main Game Loop
 			
 		# Exit Program
-		printDebug("PyGame Exit.")
+		print("PyGame Exit.")
 		pygame.quit()
-		printDebug("System Exit.")
+		print("System Exit.")
 		sys.exit()
+
+# Unit Test
+if __name__ == "__main__":
+	world = World(50,50,500,500, 50)
+	world.run()
