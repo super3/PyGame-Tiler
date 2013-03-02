@@ -38,15 +38,15 @@ class Tile(pygame.sprite.Sprite):
 	Static tiles use this class directly. Static/immovable objects should use this class directly.
 	
 	Data members:
-	image -- Contains the sprite image (usually imported as a .PNG)
-			 Will later be expanded as an array with multiple image
-			 so it can support animation.
+	image 	   -- Contains the sprite image (usually imported as a .PNG). Will later be expanded
+				  as an array with multiple image so it can support animation.
 
 	Keyword arguments:
 	image_path -- Relative path to the title's image. See image data member.
 	check_size -- Used to make sure that the title pixel size is the same as the source image.
 
 	"""
+	# Constructor and Magics
 	def __init__(self, img_path, check_size):
 		# Call the parent class (Sprite) constructor 
 		pygame.sprite.Sprite.__init__(self)
@@ -75,19 +75,19 @@ class World:
 	and then run the world.
     
     Arguments/Data members:
-    screen_size -- The pixel dimension of the screen. (2-tuple)
-    world_grid_size -- The grid dimension of the world. (2-tuple)
-    tile_size -- The pixel dimension of a grid square. (int)
+    screen_size 	 -- The pixel dimension of the screen. (2-tuple)
+    world_grid_size  -- The grid dimension of the world. (2-tuple)
+    tile_size 		 -- The pixel dimension of a grid square. (int)
 
-    background_loc -- The offset for the screen display. For background scrolling.
+    background_loc 	 -- The offset for the screen display. For background scrolling.
     background_color -- Base color of the PyGame form. 
-    fps -- Frames per second to display game. 
-    scroll_speed -- Pixel amount to move view window for every key press. 
-    map -- An array of tile objects. 
+    fps 			 -- Frames per second to display game. 
+    scroll_speed 	 -- Pixel amount to move view window for every key press. 
+    map 	         -- An array of tile objects. 
 
-    screen -- Actual display surface.
-    done -- Sentinel for game loop.
-    clock -- Helps track time for FPS and animations.
+    screen 			 -- Actual display surface.
+    done 	         -- Sentinel for game loop.
+    clock 	         -- Helps track time for FPS and animations.
 
 	"""
 	# Constructor and Magics
@@ -174,7 +174,7 @@ class World:
 		elif direction == RIGHT: self.move_right(speed)
 		else: print("Invalid move direction.")
 
-	# Movement Methods
+	# Private Movement Methods
 	def move_up(self, speed = 1):
 		"""Move the view window up by the speed (default 1px)."""
 		if self.background_loc_y + speed < 0:

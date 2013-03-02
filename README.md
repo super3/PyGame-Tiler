@@ -15,24 +15,23 @@ This section is blank at the moment.
 All visible game objects (including background, buildings, etc) inherit from the Tile class. Static tiles use this class directly. Inherits from [_pygame.sprite.Sprite_](http://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite).
 
 ##### Constructor
-* \_\_init\_\_(self, img_path, size, location) - Initializes vars.
+* \_\_init\_\_(self, img_path, check_size) - Initializes vars.
 
 	* img\_path - File path to the tile image.
-	* check_size - 2-tuple of the tile size. ex.(width, height). This will check to make sure the tile size is the same as the image size.
-	* location - 2-tuple of the tile screen location ex(x,y)
-
+	* check_size - Square tile pixel size. Will check to make sure the tile size is the same as the image size.
 
 #### Vars
 * image - Contains the sprite image (usually imported as a .PNG)
-* rect.x - Coordinate X of the sprite (measured from the left edge)
-* rect.y - Coordinate Y of the sprite (measured from the top edge)
 
-### Methods
+#### Methods
 * render(screen) - Blit tile onto a passed surface. 
+
+#### Example Code
+	tile = Tile('grass.png', 64)
 
 ---
 
-### Class: Grid
+### Class: Grid (Not Yet Implemented)
 Contains an array of Tiles objects that represents the map for the game. Will return the final surface object for drawing on the screen. Also includes much of the funtional code for the tiler.
 
 
@@ -53,21 +52,40 @@ Contains an array of Tiles objects that represents the map for the game. Will re
 When initialized it will create a world of the specified dimensions and launch the PyGame window. This will be an empty PyGame window, as no content has been added to it. You may then preload sprites, and then run the world.
 
 #### Constructor
-* \_\_init\_\_(x, y, grid, background_color = BLACK) - Initializes vars.
+* \_\_init\_\_(screen\_size, world\_grid\_size, tile\_size) - Initializes vars.
 
 #### Vars
 
-* size_x - The x dimension of the screen in pixels.
-* size_y - The y dimension of the screen in pixels.
-* grid - The world in grid squares.
-* background_image - Contains the image of the world background. 
-* background_x - The x offset for the background image. 
-* background_y - The y offset for the backkound image. 
-* background_color - Base color of the PyGame form. 
+    screen_size 	 -- The pixel dimension of the screen. (2-tuple)
+    world_grid_size  -- The grid dimension of the world. (2-tuple)
+    tile_size 		 -- The pixel dimension of a grid square. (int)
 
-#### Methods
-* setTitle(title) - Sets the PyGame window title.
-* setIcon(path) - Sets the PyGame window icon.
-* loadMusic(path) - Starts playing some background music.
+    background_loc 	 -- The offset for the screen display. For background scrolling.
+    background_color -- Base color of the PyGame form. 
+    fps 			 -- Frames per second to display game. 
+    scroll_speed 	 -- Pixel amount to move view window for every key press. 
+    map 	         -- An array of tile objects. 
+
+    screen 			 -- Actual display surface.
+    done 	         -- Sentinel for game loop.
+    clock 	         -- Helps track time for FPS and animations.
+
+#### "Public" Methods
+* set_title(title) - Sets the PyGame window title.
+* set_icon(path) - Sets the PyGame window icon.
+* load_music(path) - Starts playing some background music.
+* fill(default_tile) - Fill a world's map with the passed default tile.
 * move(direction, speed) - Moves the view window.
-* run(self) - Launches the world. 
+* run() - Launches the world. 
+
+#### "Private" Methods
+* move_up(speed) - Moves the view window up.
+* move_down(speed) - Moves the view window down.
+* move_left(speed) - Moves the view window left.
+* move_right(speed) - Moves the view window right.
+* get_index(x, y) - Returns the map list index for a given (x,y) location on the grid.
+
+#### Example Code
+	world = World((640,640), (16,16), 64)
+	world.fill( Tile('grass.png', 64) )
+	world.run()
