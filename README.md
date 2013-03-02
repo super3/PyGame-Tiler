@@ -79,11 +79,11 @@ When initialized it will create a world of the specified dimensions and launch t
 * run() - Launches the world. 
 
 #### "Private" Methods
-* move_up(speed) - Moves the view window up.
-* move_down(speed) - Moves the view window down.
-* move_left(speed) - Moves the view window left.
-* move_right(speed) - Moves the view window right.
-* get_index(x, y) - Returns the map list index for a given (x,y) location on the grid.
+* \_move_up(speed) - Moves the view window up.
+* \_move_down(speed) - Moves the view window down.
+* \_move_left(speed) - Moves the view window left.
+* \_move_right(speed) - Moves the view window right.
+* \_get_index(x, y) - Returns the map list index for a given (x,y) location on the grid.
 
 #### Example Code
 	world = World((640,640), (16,16), 64)
