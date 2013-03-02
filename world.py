@@ -14,6 +14,7 @@
 
 # System Imports
 import os
+import sys
 import pygame
 
 # Define Basic Colors
@@ -64,57 +65,44 @@ class Tile(pygame.sprite.Sprite):
 
 # World Class
 class World:
-	"""A class for the creation of a PyGame 2D grid world."""
-	def __init__(self, screen_size, world_grid_size, grid_size):
-		"""
-		When initialized it will create a world of the specified dimensions
-		and launch the PyGame window. This will be an empty PyGame window,
-		as no content has been added to it. You may then preload sprites, 
-		and then run the world.
-	    
-	    Arguments/Data members:
-	    sizeX -- The x dimension of the screen in pixels.
-	    sizeY -- The y dimension of the screen in pixels.
-	    worldX -- The x dimension of the world in tiles.
-	    worldY -- The y dimension of the world in tiles.
-	    gridSize -- The square dimension of a grid square in pixels.
-	   	background_image -- Contains the image of the world background. 
-			Althought it will not return an error, the background image resolution 
-			should be the same as the world dimentions. If the background image does
-			not cover the full world background, or no background image is set, black 
-			will be the background color.
-	    backgroundX -- The x offset for the background image. For horizontal scrolling.
-	    backgroundY -- The y offset for the backkound image. For vertical scrolling.
-		
-	    Extra Data Members:
-	    backgroundColor -- Base color of the PyGame form. This should be covered up by
-	    			  	   a background color or tile. 
-		"""
+	"""
+	When initialized it will create a world of the specified dimensions
+	and launch the PyGame window. This will be an empty PyGame window,
+	as no content has been added to it. You may then preload sprites, 
+	and then run the world.
+    
+    Arguments/Data members:
+    screen_size -- The pixel dimension of the screen. (2-tuple)
+    world_grid_size -- The grid dimension of the world. (2-tuple)
+    tile_size -- The pixel dimension of a grid square. (int)
+
+    background_loc -- The offset for the screen display. For background scrolling.
+    background_color -- Base color of the PyGame form. 
+    fps -- Frames per second to display game. 
+    scroll_speed -- Pixel amount to move view window for every keypress. 
+    map -- An array of tile objects. 
+
+	"""
+	# Constructor and Magics
+	def __init__(self, screen_size, world_grid_size, tile_size, background_color = BLACK, fps = 30, scroll_speed = 10):
 		
 		# Initialize Data Members
-		self.sizeX = x
-		self.sizeY = y
+		self.screen_size = screen_size
+		self.world_grid_size = world_grid_size
+		self.tile_size = tile_size
 
-		self.gridX = worldX
-		self.gridY = worldY
-		self.gridSize = gridSize
-		self.worldX =  worldX * gridSize
-		self.worldY = worldY * gridSize
-
-		self.background_image = None
-		self.backgroundX = 0 
-		self.backgroundY = 0
-
-		# Render Settings
-		self.backgroundColor = BLACK
-		self.fps = 30
-		self.scrollSpeed = 10
+		# Initialize Optional Data Members
+		self.background_loc = (0,0)
+		self.background_color = background_color
+		self.fps = fps
+		self.scroll_speed = scroll_speed
+		self.map = []
 		
 		# Start PyGame
 		pygame.init()
 		
 		# Display Screen
-		self.screen = pygame.display.set_mode( [self.sizeX*self.gridSize, self.sizeY*self.gridSize] )
+		self.screen = pygame.display.set_mode( screen_size )
 		
 		# Sentinel and Game Timer
 		self.done = False
@@ -124,78 +112,26 @@ class World:
 		self.sprites = pygame.sprite.RenderPlain()
 		
 		# Debug Messages
-		print("World Initialized.")
-		print("Screen Size: " + str(x) + "x" + str(y) + ".")
-		print("World Size: " + str(self.worldX) + "x" + str(self.worldY) + ".")
-		print("Grid Size: " + str(gridX) + "x" + str(gridY) + ".")
-		print("Grid Square Size: " + str(gridSize) + "px.")
+		print(self)
+	def __str__(self):
+		output = "World Object Debug Dump:\n"
+		output += "\tScreen Size: " + str(self.screen_size) + " px.\n"
+		output += "\tWorld Grid Size: " + str(self.world_grid_size) + " tiles.\n"
+		output += "\tTile Size: " + str(self.tile_size) + " px.\n"
+		return output
 
-	def setTitle(self, title):
-		"""Sets the PyGame window title"""
-		pygame.display.set_caption(str(title))
-		
-		# Debug Message
-		print("Title Set: '" + str(title) + "'.")
-		
-	def setIcon(self, path):
-		"""
-		Pre-Condition: The icon must be 32x32 pixels
-		
-		Grey (100,100,100) will be alpha channel
-		The window icon will be set to the bitmap, but the grey pixels
-		will be full alpha channel
-		
-		Note: Can only be called once after pygame.init() and before
-		somewindow = pygame.display.set_mode()
-		"""
-		if fileExists( path, "Icon"):
-			icon = pygame.Surface((32,32))
-			icon.set_colorkey((100,100,100)) # call that color transparent
-			rawicon = pygame.image.load(path) # load raw icon
-			for i in range(0,32):
-				for j in range(0,32):
-					icon.set_at((i,j), rawicon.get_at((i,j)))
-			pygame.display.set_icon(icon)
-			print("Icon Set: '" + str(path) + "'.")
-
-	def loadMusic(self, path):
-		"""Sets the background music for the world. Src argument is the path
-		   of the sound file to load. This file can be WAV, MP3, or MIDI format."""
-		# Seems to crash with view/sound/backgound2.mpg, perhaps because of the 
-		# cover art that seems to be embedded into the .mp3
-		if fileExists( path, "Background Music"):
-			print("Background Music Started.")
-			pygame.mixer.music.load(path)
-			pygame.mixer.music.play(-1, 0.0)
-
-	def moveUp(self, speed = 1):
-		"""Move the view window up by the speed (default 1px)"""
-		if self.backgroundY < 0:
-			self.backgroundY += speed
-			for sprite in self.sprites:
-				sprite.rect.y += speed
-	def moveDown(self, speed = 1):
-		"""Move the view window down by the speed (default 1px)"""
-		if self.backgroundY > -(self.worldY - self.sizeY):
-			self.backgroundY -= speed
-			for sprite in self.sprites:
-				sprite.rect.y -= speed
-	def moveLeft(self, speed = 1):
-		"""Move the view window left by the speed (default 1px)"""
-		if self.backgroundX < 0:
-			self.backgroundX += speed
-			for sprite in self.sprites:
-				sprite.rect.x += speed
-	def moveRight(self, speed = 1):
-		"""Move the view window right by the speed (default 1px)"""
-		if self.backgroundX > -(self.worldX - self.sizeX):
-			self.backgroundX -= speed
-			for sprite in self.sprites:
-				sprite.rect.x -= speed
+	# Startup Methods
+	def fill(self, default_tile):
+		"""Fill a world's grid with the passed default tile."""
+		pass
 	
+	# Run Method
 	def run(self):
-		"""Contains the main game loop for the world, which will basically draw everything
-		to the screen for the specified FPS."""
+		"""
+		Contains the main game loop for the world, which will basically draw everything
+		to the screen at the specified FPS.
+
+		"""
 		# Main Game Loop
 		while self.done == False:			
 			# Check for Events
@@ -207,33 +143,19 @@ class World:
 						
 			# Check for Keys
 			key=pygame.key.get_pressed()
-			
-			# Move View Window
-			if key[pygame.K_LEFT]:
-				self.moveLeft(self.scrollSpeed)
-			elif key[pygame.K_RIGHT]:
-				self.moveRight(self.scrollSpeed) 
-			elif key[pygame.K_UP]:
-				self.moveUp(self.scrollSpeed)
-			elif key[pygame.K_DOWN]:
-				self.moveDown(self.scrollSpeed)
 				
 			# Clear the Screen
-			self.screen.fill(self.backgroundColor)
-			
-			# Try to Draw Background
-			if self.background_image != None: 
-				self.screen.blit( self.background_image, [self.backgroundX, self.backgroundY] )
+			self.screen.fill(self.background_color)
 				
-			# Draw all Sprites
-			for sprite in self.sprites:
-				sprite.render(self.screen)
+			# # Draw all Sprites
+			# for sprite in self.sprites:
+			# 	sprite.render(self.screen)
 			
 			# Update Display
 			pygame.display.flip()
 			
 			# Limit FPS of Game Loop
-			self.clock.tick(self.fps) # Magic Int!
+			self.clock.tick(self.fps)
 		# End Main Game Loop
 			
 		# Exit Program
@@ -244,5 +166,5 @@ class World:
 
 # Unit Test
 if __name__ == "__main__":
-	world = World(50,50,500,500, 50)
+	world = World((500,500), (5,5), 50)
 	world.run()
