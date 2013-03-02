@@ -79,28 +79,28 @@ class World:
 	When initialized it will create a world of the specified dimensions	and launch the PyGame window.
 	This will be an empty PyGame window, as no content has been added to it. You may then pre-load sprites, 
 	and then run the world.
-    
-   	Data members:
-    screen_size 	 -- The pixel dimension of the screen. (2-tuple)
-    world_grid_size  -- The grid dimension of the world. (2-tuple)
-    tile_size 		 -- The pixel dimension of a grid square. (int)
 
-    background_loc 	 -- The offset for the screen display. For background scrolling.
-    background_color -- Base color of the PyGame form. 
-    fps 			 -- Frames per second to display game. 
-    scroll_speed 	 -- Pixel amount to move view window for every key press. 
-    map 	         -- An array of tile objects. 
+	Data members:
+	screen_size 	 -- The pixel dimension of the screen. (2-tuple)
+	world_grid_size  -- The grid dimension of the world. (2-tuple)
+	tile_size 		 -- The pixel dimension of a grid square. (int)
 
-    screen 			 -- Actual display surface.
-    done 	         -- Sentinel for game loop.
-    clock 	         -- Helps track time for FPS and animations.
+	background_loc 	 -- The offset for the screen display. For background scrolling.
+	background_color -- Base color of the PyGame form. 
+	fps 			 -- Frames per second to display game. 
+	scroll_speed 	 -- Pixel amount to move view window for every key press. 
+	map 	         -- An array of tile objects. 
 
-    Arguments:
-    See data members.
+	screen 			 -- Actual display surface.
+	done 	         -- Sentinel for game loop.
+	clock 	         -- Helps track time for FPS and animations.
+
+	Arguments:
+	See data members.
 
 	"""
 	# Constructor and Magics
-	def __init__(self, screen_size, world_grid_size, tile_size, background_color = BLACK, fps = 30, scroll_speed = 10):
+	def __init__(self, screen_size, world_grid_size, tile_size, fps = 30, scroll_speed = 10):
 		"""See World object's Docstring."""
 		# Initialize Data Members
 		self.screen_size = screen_size
@@ -109,7 +109,7 @@ class World:
 
 		# Initialize Optional Data Members
 		self.background_loc_x, self.background_loc_y = (0,0)
-		self.background_color = background_color
+		self.background_color = BLACK
 		self.fps = fps
 		self.scroll_speed = scroll_speed
 		self.map = []
