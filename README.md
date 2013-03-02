@@ -18,7 +18,7 @@ All visible game objects (including background, buildings, etc) inherit from the
 * \_\_init\_\_(self, img_path, size, location) - Initializes vars.
 
 	* img\_path - File path to the tile image.
-	* size - 2-tuple of the tile size. ex.(width, height)
+	* check_size - 2-tuple of the tile size. ex.(width, height). This will check to make sure the tile size is the same as the image size.
 	* location - 2-tuple of the tile screen location ex(x,y)
 
 
