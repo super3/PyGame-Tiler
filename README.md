@@ -27,7 +27,7 @@ All visible game objects (including background, buildings, etc) inherit from the
 * render(screen) - Blit tile onto a passed surface. 
 
 #### Example Code
-	tile = Tile('grass.png', 64)
+	tile = Tile('assets/grass.png', 64)
 
 ---
 
@@ -87,5 +87,5 @@ When initialized it will create a world of the specified dimensions and launch t
 
 #### Example Code
 	world = World((640,640), (16,16), 64)
-	world.fill( Tile('grass.png', 64) )
+	world.fill( Tile('assets/grass.png', 64) )
 	world.run()

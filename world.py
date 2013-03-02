@@ -16,12 +16,13 @@
 import os
 import sys
 import pygame
+import logging
 
 # Define Basic Colors
 BLACK = [  0,   0,   0]    
-BLUE  = [  0,   0, 255]
+BLUE = [  0,   0, 255]
 GREEN = [  0, 255,   0]
-RED   = [255,   0,   0]
+RED = [255,   0,   0]
 WHITE = [255, 255, 255]
 ALPHA = [255,   0, 238]
 
@@ -30,6 +31,9 @@ UP = 1
 DOWN = 2
 LEFT = 3
 RIGHT = 4
+
+# Start Logging
+logging.basicConfig(filename="sample.log", filemode="w", level=logging.DEBUG)
 
 # Tile Class
 class Tile(pygame.sprite.Sprite):
@@ -41,31 +45,33 @@ class Tile(pygame.sprite.Sprite):
 	image 	   -- Contains the sprite image (usually imported as a .PNG). Will later be expanded
 				  as an array with multiple image so it can support animation.
 
-	Keyword arguments:
+	Arguments:
 	image_path -- Relative path to the title's image. See image data member.
 	check_size -- Used to make sure that the title pixel size is the same as the source image.
 
 	"""
-	# Constructor and Magics
 	def __init__(self, img_path, check_size):
 		# Call the parent class (Sprite) constructor 
 		pygame.sprite.Sprite.__init__(self)
 		
-		# Load the image, if it does not exist try to load the error image
+		#  Try to load image
 		if os.path.exists( img_path ):
-			# Create an image and remove background
+			# Create an image
 			tmp_image = pygame.image.load(img_path)
 		else:
+			# Else return a blank surface
 			tmp_image = pygame.Surface(size)
 
 		# Sets .PNG transparency to PyGame transparency
 		self.image = tmp_image.convert_alpha() 
 
 		# Check Image Dimensions
-		if not self.image.get_size() == (check_size, check_size): raise ValueError("Invalid image size.")
+		if not self.image.get_size() == (check_size, check_size): 
+			raise ValueError("Invalid image size.")
 
 	def render(self, screen, loc):
 		screen.blit(self.image, (loc[0], loc[1]))
+
 
 # World Class
 class World:
@@ -74,7 +80,7 @@ class World:
 	This will be an empty PyGame window, as no content has been added to it. You may then pre-load sprites, 
 	and then run the world.
     
-    Arguments/Data members:
+   	Data members:
     screen_size 	 -- The pixel dimension of the screen. (2-tuple)
     world_grid_size  -- The grid dimension of the world. (2-tuple)
     tile_size 		 -- The pixel dimension of a grid square. (int)
@@ -88,6 +94,9 @@ class World:
     screen 			 -- Actual display surface.
     done 	         -- Sentinel for game loop.
     clock 	         -- Helps track time for FPS and animations.
+
+    Arguments:
+    See data members.
 
 	"""
 	# Constructor and Magics
@@ -115,8 +124,10 @@ class World:
 		self.done = False
 		self.clock = pygame.time.Clock()
 		
-		# Debug Messages
-		print(self)
+		# Logging Messages
+		logging.info('World Object Created.')
+		logging.debug(str(self))
+
 	def __str__(self):
 		output = "World Object:\n"
 		output += "\tScreen Size: " + str(self.screen_size) + " px.\n"
@@ -127,11 +138,13 @@ class World:
 		output += "\tCurrent Background Location: " + str(tmp_background_loc) + "."
 		return output
 
+
 	# Window Methods
 	def set_title(self, title):
 		"""Sets the PyGame window title."""
 		pygame.display.set_caption(str(title))
-		print("Title Set: '" + str(title) + "'.")
+		logging.info("Title Set: '" + str(title) + "'.")
+
 	def set_icon(self, path):
 		"""
 		Pre-Condition: The icon must be 32x32 pixels
@@ -151,53 +164,60 @@ class World:
 				for j in range(0,32):
 					icon.set_at((i,j), rawicon.get_at((i,j)))
 			pygame.display.set_icon(icon)
-			print("Icon Set: '" + str(path) + "'.")
+			logging.info("Icon Set: '" + str(path) + "'.")
 		else:
-			print("Icon Load Failed: " + str(path) + ".")
+			logging.error("Icon Load Failed: " + str(path) + ".")
+
 	def load_music(self, path):
 		"""Sets the background music for the world. This file can be WAV, MP3, or MIDI format."""
 		if os.path.exists( path ):
-			print("Background Music Started: '" + str(path) + "'.")
+			logging.info("Background Music Started: '" + str(path) + "'.")
 			pygame.mixer.music.load(path)
 			pygame.mixer.music.play(-1, 0.0)
 		else: 
-			print("Background Music Load Failed: '" + str(path) + "'.")
+			logging.error("Background Music Load Failed: '" + str(path) + "'.")
+
+
+	# Private Movement Methods
+	def _move_up(self, speed = 1):
+		"""Move the view window up by the speed (default 1px)."""
+		if self.background_loc_y + speed < 0:
+			self.background_loc_y += speed
+
+	def _move_down(self, speed = 1):
+		"""Move the view window down by the speed (default 1px)."""
+		if self.background_loc_y - speed > -(self.world_grid_size[1]*self.tile_size - self.screen_size[1]):
+			self.background_loc_y -= speed
+
+	def _move_left(self, speed = 1):
+		"""Move the view window left by the speed (default 1px)."""
+		if self.background_loc_x + speed < 0:
+			self.background_loc_x += speed
+
+	def _move_right(self, speed = 1):
+		"""Move the view window right by the speed (default 1px)."""
+		if self.background_loc_x - speed > -(self.world_grid_size[0]*self.tile_size - self.screen_size[0]):
+			self.background_loc_x -= speed
+
+
+	# Private Helper Method(s)
+	def _get_index(self, x, y):
+		"""Returns the map list index for a given (x,y) location on the grid."""
+		return x + self.world_grid_size[0] * ( self.world_grid_size[1] - y - 1 ) - 1
+
 
 	# Methods
 	def fill(self, default_tile):
 		"""Fill a world's map with the passed default tile."""
 		self.map = [default_tile for i in range(self.world_grid_size[0] * self.world_grid_size[1])]
+
 	def move(self, direction, speed):
-		if direction == UP: self.move_up(speed)
-		elif direction == DOWN: self.move_down(speed)
-		elif direction == LEFT: self.move_left(speed)
-		elif direction == RIGHT: self.move_right(speed)
-		else: print("Invalid move direction.")
+		if direction == UP: self._move_up(speed)
+		elif direction == DOWN: self._move_down(speed)
+		elif direction == LEFT: self._move_left(speed)
+		elif direction == RIGHT: self._move_right(speed)
+		else: logging.warning("Invalid move direction.: " + str(direction) + ".")	
 
-	# Private Movement Methods
-	def move_up(self, speed = 1):
-		"""Move the view window up by the speed (default 1px)."""
-		if self.background_loc_y + speed < 0:
-			self.background_loc_y += speed
-	def move_down(self, speed = 1):
-		"""Move the view window down by the speed (default 1px)."""
-		if self.background_loc_y - speed > -(self.world_grid_size[1]*self.tile_size - self.screen_size[1]):
-			self.background_loc_y -= speed
-	def move_left(self, speed = 1):
-		"""Move the view window left by the speed (default 1px)."""
-		if self.background_loc_x + speed < 0:
-			self.background_loc_x += speed
-	def move_right(self, speed = 1):
-		"""Move the view window right by the speed (default 1px)."""
-		if self.background_loc_x - speed > -(self.world_grid_size[0]*self.tile_size - self.screen_size[0]):
-			self.background_loc_x -= speed
-
-	# Helper Method(s)
-	def get_index(self, x, y):
-		"""Returns the map list index for a given (x,y) location on the grid."""
-		return x + self.world_grid_size[0] * ( self.world_grid_size[1] - y - 1 ) - 1
-	
-	# Run Method
 	def run(self):
 		"""
 		Contains the main game loop for the world, which will basically draw everything
@@ -210,7 +230,7 @@ class World:
 			for event in pygame.event.get(): 
 				# Quit Game
 				if event.type == pygame.QUIT:
-					print("PyGame.Quit Called.")
+					logging.info("PyGame.Quit Called.")
 					self.done = True
 						
 			# Check for Keys
@@ -232,7 +252,7 @@ class World:
 			# Draw all Sprites
 			for y in range(self.world_grid_size[1]):
 				for x in range(self.world_grid_size[0]):
-					draw_tile = self.map[self.get_index(x,y)]
+					draw_tile = self.map[self._get_index(x,y)]
 					x_loc = x*self.tile_size + self.background_loc_x
 					y_loc = y*self.tile_size + self.background_loc_y
 					draw_tile.render(self.screen, (x_loc, y_loc))
@@ -245,13 +265,14 @@ class World:
 		# End Main Game Loop
 			
 		# Exit Program
-		print("PyGame Exit.")
+		logging.info("PyGame Exit.")
 		pygame.quit()
-		print("System Exit.")
+		logging.info("System Exit.")
 		sys.exit()
 
 # Unit Test
 if __name__ == "__main__":
 	world = World((640,640), (16,16), 64)
-	world.fill( Tile('grass.png', 64) )
+	world.set_title("Game Test Window")
+	world.fill( Tile('assets/grass.png', 64) )
 	world.run()
