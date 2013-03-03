@@ -17,14 +17,10 @@ import os
 import sys
 import pygame
 import logging
+from pygame.locals import Color
 
-# Define Basic Colors
-BLACK = [  0,   0,   0]    
-BLUE = [  0,   0, 255]
-GREEN = [  0, 255,   0]
-RED = [255,   0,   0]
-WHITE = [255, 255, 255]
-ALPHA = [255,   0, 238]
+# Declare Alpha
+ALPHA = (100, 100, 100)
 
 # Fake Enumerations/Constants
 UP = 1
@@ -85,7 +81,8 @@ class World:
 	world_grid_size  -- The grid dimension of the world. (2-tuple)
 	tile_size 		 -- The pixel dimension of a grid square. (int)
 
-	background_loc 	 -- The offset for the screen display. For background scrolling.
+	offset_x 	 	 -- The x offset for the screen display. For background scrolling.
+	offset_y 	 	 -- The y offset for the screen display. For background scrolling.
 	background_color -- Base color of the PyGame form. 
 	fps 			 -- Frames per second to display game. 
 	scroll_speed 	 -- Pixel amount to move view window for every key press. 
@@ -96,11 +93,12 @@ class World:
 	clock 	         -- Helps track time for FPS and animations.
 
 	Arguments:
+	icon -- Will set the window icon of the window.
 	See data members.
 
 	"""
 	# Constructor and Magics
-	def __init__(self, screen_size, world_grid_size, tile_size, fps = 30, scroll_speed = 10):
+	def __init__(self, screen_size, world_grid_size, tile_size, icon_path = None, fps = 30, scroll_speed = 10):
 		"""See World object's Docstring."""
 		# Initialize Data Members
 		self.screen_size = screen_size
@@ -108,17 +106,20 @@ class World:
 		self.tile_size = tile_size
 
 		# Initialize Optional Data Members
-		self.background_loc_x, self.background_loc_y = (0,0)
-		self.background_color = BLACK
+		self.offset_x, self.offset_y = (0,0)
+		self.background_color = Color("Black")
 		self.fps = fps
 		self.scroll_speed = scroll_speed
 		self.map = []
 		
 		# Start PyGame
 		pygame.init()
+
+		# Set Icon
+		if not icon_path == None: self._set_icon(icon_path)
 		
 		# Display Screen
-		self.screen = pygame.display.set_mode( screen_size )
+		self.screen = pygame.display.set_mode(screen_size)
 		
 		# Sentinel and Game Timer
 		self.done = False
@@ -134,8 +135,8 @@ class World:
 		output += "\tWorld Grid Size: " + str(self.world_grid_size) + " tiles"
 		output += ", Tile Size: " + str(self.tile_size) + " px.\n"
 		output += "\tFPS: " + str(self.fps) + ", Scroll Speed: " + str(self.scroll_speed) + ".\n"
-		tmp_background_loc = (self.background_loc_x, self.background_loc_y)
-		output += "\tCurrent Background Location: " + str(tmp_background_loc) + "."
+		tmp_offset = (self.offset_x, self.offset_y)
+		output += "\tCurrent Background Location: " + str(tmp_offset) + "."
 		return output
 
 
@@ -145,7 +146,7 @@ class World:
 		pygame.display.set_caption(str(title))
 		logging.info("Title Set: '" + str(title) + "'.")
 
-	def set_icon(self, path):
+	def _set_icon(self, path):
 		"""
 		Pre-Condition: The icon must be 32x32 pixels
 		
@@ -156,9 +157,9 @@ class World:
 		somewindow = pygame.display.set_mode()
 
 		"""
-		if os.path.exists( path ):
+		if os.path.exists(path):
 			icon = pygame.Surface((32,32))
-			icon.set_colorkey((100,100,100)) # call that color transparent
+			icon.set_colorkey(ALPHA) # call that color transparent
 			rawicon = pygame.image.load(path) # load raw icon
 			for i in range(0,32):
 				for j in range(0,32):
@@ -166,11 +167,11 @@ class World:
 			pygame.display.set_icon(icon)
 			logging.info("Icon Set: '" + str(path) + "'.")
 		else:
-			logging.error("Icon Load Failed: " + str(path) + ".")
+			logging.error("Icon Load Failed: '" + str(path) + "'.")
 
 	def load_music(self, path):
 		"""Sets the background music for the world. This file can be WAV, MP3, or MIDI format."""
-		if os.path.exists( path ):
+		if os.path.exists(path):
 			logging.info("Background Music Started: '" + str(path) + "'.")
 			pygame.mixer.music.load(path)
 			pygame.mixer.music.play(-1, 0.0)
@@ -178,32 +179,37 @@ class World:
 			logging.error("Background Music Load Failed: '" + str(path) + "'.")
 
 
-	# Private Movement Methods
+	# Movement Methods
 	def _move_up(self, speed = 1):
 		"""Move the view window up by the speed (default 1px)."""
-		if self.background_loc_y + speed < 0:
-			self.background_loc_y += speed
+		if self.offset_y + speed < 0:
+			self.offset_y += speed
 
 	def _move_down(self, speed = 1):
 		"""Move the view window down by the speed (default 1px)."""
-		if self.background_loc_y - speed > -(self.world_grid_size[1]*self.tile_size - self.screen_size[1]):
-			self.background_loc_y -= speed
+		if self.offset_y - speed > -(self.world_grid_size[1]*self.tile_size - self.screen_size[1]):
+			self.offset_y -= speed
 
 	def _move_left(self, speed = 1):
 		"""Move the view window left by the speed (default 1px)."""
-		if self.background_loc_x + speed < 0:
-			self.background_loc_x += speed
+		if self.offset_x + speed < 0:
+			self.offset_x += speed
 
 	def _move_right(self, speed = 1):
 		"""Move the view window right by the speed (default 1px)."""
-		if self.background_loc_x - speed > -(self.world_grid_size[0]*self.tile_size - self.screen_size[0]):
-			self.background_loc_x -= speed
+		if self.offset_x - speed > -(self.world_grid_size[0]*self.tile_size - self.screen_size[0]):
+			self.offset_x -= speed
 
 
-	# Private Helper Method(s)
+	# Location Methods
 	def _get_index(self, x, y):
 		"""Returns the map list index for a given (x,y) location on the grid."""
 		return x + self.world_grid_size[0] * ( self.world_grid_size[1] - y - 1 ) - 1
+	def get_tile(self, pos):
+		"""Returns the (x,y) location of a tile for the given mouse location."""
+		x = (pos[0]+abs(self.offset_x))/self.tile_size
+		y = (pos[1]+abs(self.offset_y))/self.tile_size
+		return (int(x), int(y))
 
 
 	# Methods
@@ -224,6 +230,9 @@ class World:
 		to the screen at the specified FPS.
 
 		"""
+		# Hover Tile
+		hover_tile = Tile('assets/dark_grass.png', 64)
+
 		# Main Game Loop
 		while self.done == False:			
 			# Check for Events
@@ -232,6 +241,8 @@ class World:
 				if event.type == pygame.QUIT:
 					logging.info("PyGame.Quit Called.")
 					self.done = True
+				elif event.type == pygame.MOUSEBUTTONDOWN:
+					print("You clicked: on tile:" + str(self.get_tile(pygame.mouse.get_pos())))
 						
 			# Check for Keys
 			key=pygame.key.get_pressed()
@@ -248,14 +259,20 @@ class World:
 				
 			# Clear the Screen
 			self.screen.fill(self.background_color)
+
+			# Hover Tile
+			mos_x, mos_y = self.get_tile(pygame.mouse.get_pos())
 				
 			# Draw all Sprites
 			for y in range(self.world_grid_size[1]):
 				for x in range(self.world_grid_size[0]):
 					draw_tile = self.map[self._get_index(x,y)]
-					x_loc = x*self.tile_size + self.background_loc_x
-					y_loc = y*self.tile_size + self.background_loc_y
-					draw_tile.render(self.screen, (x_loc, y_loc))
+					x_loc = x*self.tile_size + self.offset_x
+					y_loc = y*self.tile_size + self.offset_y
+					if not (mos_x == x and mos_y == y):
+						draw_tile.render(self.screen, (x_loc, y_loc))
+					else:
+						hover_tile.render(self.screen, (x_loc, y_loc))
 			
 			# Update Display
 			pygame.display.flip()
@@ -263,16 +280,11 @@ class World:
 			# Limit FPS of Game Loop
 			self.clock.tick(self.fps)
 		# End Main Game Loop
-			
-		# Exit Program
-		logging.info("PyGame Exit.")
-		pygame.quit()
-		logging.info("System Exit.")
-		sys.exit()
+
 
 # Unit Test
 if __name__ == "__main__":
-	world = World((640,640), (16,16), 64)
-	world.set_title("Game Test Window")
+	world = World((640,640), (16,16), 64, 'assets/icon.png')
+	world.set_title("PyGame Tiler - Test Window")
 	world.fill( Tile('assets/grass.png', 64) )
 	world.run()

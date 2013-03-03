@@ -56,29 +56,30 @@ When initialized it will create a world of the specified dimensions and launch t
 
 #### Vars
 
-    screen_size 	 -- The pixel dimension of the screen. (2-tuple)
+    screen_size      -- The pixel dimension of the screen. (2-tuple)
     world_grid_size  -- The grid dimension of the world. (2-tuple)
-    tile_size 		 -- The pixel dimension of a grid square. (int)
+    tile_size        -- The pixel dimension of a grid square. (int)
 
-    background_loc 	 -- The offset for the screen display. For background scrolling.
+    offset_x         -- The x offset for the screen display. For background scrolling.
+    offset_y         -- The y offset for the screen display. For background scrolling.
     background_color -- Base color of the PyGame form. 
-    fps 			 -- Frames per second to display game. 
-    scroll_speed 	 -- Pixel amount to move view window for every key press. 
-    map 	         -- An array of tile objects. 
+    fps              -- Frames per second to display game. 
+    scroll_speed     -- Pixel amount to move view window for every key press. 
+    map              -- An array of tile objects. 
 
-    screen 			 -- Actual display surface.
-    done 	         -- Sentinel for game loop.
-    clock 	         -- Helps track time for FPS and animations.
+    screen           -- Actual display surface.
+    done             -- Sentinel for game loop.
+    clock            -- Helps track time for FPS and animations.
 
 #### "Public" Methods
 * set_title(title) - Sets the PyGame window title.
-* set_icon(path) - Sets the PyGame window icon.
 * load_music(path) - Starts playing some background music.
 * fill(default_tile) - Fill a world's map with the passed default tile.
 * move(direction, speed) - Moves the view window.
 * run() - Launches the world. 
 
 #### "Private" Methods
+* \_set_icon(path) - Sets the PyGame window icon.
 * \_move_up(speed) - Moves the view window up.
 * \_move_down(speed) - Moves the view window down.
 * \_move_left(speed) - Moves the view window left.
