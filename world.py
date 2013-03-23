@@ -15,8 +15,10 @@
 # System Imports
 import os
 import sys
+import json
 import pygame
 import logging
+from pprint import pprint
 from pygame.locals import Color
 
 # Declare Alpha
@@ -67,6 +69,14 @@ class Tile(pygame.sprite.Sprite):
 
 	def render(self, screen, loc):
 		screen.blit(self.image, (loc[0], loc[1]))
+
+
+# # Map Class
+# class Map:
+# 	"""
+# 	Data members:
+# 	map_size -- The grid dimensions of the world
+# 	"""
 
 
 # World Class
@@ -217,7 +227,22 @@ class World:
 		"""Fill a world's map with the passed default tile."""
 		self.map = [default_tile for i in range(self.world_grid_size[0] * self.world_grid_size[1])]
 
+	def load(self, path):
+		"""Load a mapfile."""
+		if os.path.exists(path):
+			# Get JSON Data
+			data = json.load(open(path))
+			# Get Map Data
+			map_name = data["layers"][0]["name"]
+			map_data = data["layers"][0]["data"]
+			map_height = data["layers"][0]["height"]
+			map_width = data["layers"][0]["width"]
+
+		else:
+			logging.error("Map File Load Failed: '" + str(path) + "'.")
+
 	def move(self, direction, speed):
+		"""Move the view camera by the specified direction and pixel speed."""
 		if direction == UP: self._move_up(speed)
 		elif direction == DOWN: self._move_down(speed)
 		elif direction == LEFT: self._move_left(speed)
@@ -286,5 +311,6 @@ class World:
 if __name__ == "__main__":
 	world = World((640,640), (16,16), 64, 'assets/icon.png')
 	world.set_title("PyGame Tiler - Test Window")
-	world.fill( Tile('assets/grass.png', 64) )
-	world.run()
+	world.fill(Tile('assets/grass.png', 64))
+	world.load('map.json')
+	#world.run()
