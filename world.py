@@ -53,7 +53,7 @@ class Tile(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 		
 		#  Try to load image
-		if os.path.exists( img_path ):
+		if os.path.exists(img_path):
 			# Create an image
 			tmp_image = pygame.image.load(img_path)
 		else:
@@ -61,7 +61,8 @@ class Tile(pygame.sprite.Sprite):
 			tmp_image = pygame.Surface(size)
 
 		# Sets .PNG transparency to PyGame transparency
-		self.image = tmp_image.convert_alpha() 
+		# self.image = tmp_image.convert_alpha() 
+		self.image = tmp_image # hack
 
 		# Check Image Dimensions
 		if not self.image.get_size() == (check_size, check_size): 
@@ -71,25 +72,59 @@ class Tile(pygame.sprite.Sprite):
 		screen.blit(self.image, (loc[0], loc[1]))
 
 
-# # Map Class
-# class Map:
-# 	"""
-# 	Data members:
-# 	map_size -- The grid dimensions of the world
-# 	"""
+# Map Class
+class Map:
+	"""
+	Converts a JSON map file into a playable map.
+
+	Data members:
+	map_name  -- The title of the map.
+	map_data  -- Raw tile data for the map.
+	map_size  -- The grid dimensions of the world. (2-tuple)
+	tile_size -- The pixel dimensions of a grid square. (int)
+	tile_list -- List of Tile objects for use in map.
+
+	"""
+	def __init__(self, path):
+		"""Load a mapfile."""
+		if os.path.exists(path):
+			self.load(path)
+			logging.info("Map File Loaded: '" + str(path) + "'.")
+		else:
+			logging.error("Map File Load Failed: '" + str(path) + "'.")
+
+	def load(self, path):
+		# Get JSON Data
+		data = json.load(open(path))
+		# Get Map Data
+		self.map_name = data["layers"][0]["name"]
+		self.raw_data = data["layers"][0]["data"]
+		self.map_size = (data["layers"][0]["height"], data["layers"][0]["width"])
+		self.tile_size = data["tileheight"] # we assume tile is square
+		# Get Tiles
+		self.tile_list = []
+		for json_tile in data["tilesets"]: 
+			self.tile_list.append( Tile(json_tile["image"], 56) )
+		# Make Map
+		self.map_data = []
+		for tile_number in self.raw_data:
+			self.map_data.append ( self.tile_list[tile_number-1] )
+
+	def fill(self, default_tile):
+		"""Fill a world's map with the passed default tile."""
+		self.map_data = [default_tile for i in range(self.map_size[0] * self.map_size[1])]
 
 
 # World Class
 class World:
 	"""
 	When initialized it will create a world of the specified dimensions	and launch the PyGame window.
-	This will be an empty PyGame window, as no content has been added to it. You may then pre-load sprites, 
+	This will be an empty PyGame window, as no content has been added to it. You may then pre-load a map, 
 	and then run the world.
 
 	Data members:
 	screen_size 	 -- The pixel dimension of the screen. (2-tuple)
-	world_grid_size  -- The grid dimension of the world. (2-tuple)
-	tile_size 		 -- The pixel dimension of a grid square. (int)
+	map_obj          -- Contains world dimension, tile info, and everything else.
 
 	offset_x 	 	 -- The x offset for the screen display. For background scrolling.
 	offset_y 	 	 -- The y offset for the screen display. For background scrolling.
@@ -108,12 +143,13 @@ class World:
 
 	"""
 	# Constructor and Magics
-	def __init__(self, screen_size, world_grid_size, tile_size, icon_path = None, fps = 30, scroll_speed = 10):
+	def __init__(self, screen_size, map_obj, icon_path = None, fps = 30, scroll_speed = 10):
 		"""See World object's Docstring."""
 		# Initialize Data Members
 		self.screen_size = screen_size
-		self.world_grid_size = world_grid_size
-		self.tile_size = tile_size
+		self.map_obj = map_obj
+		self.world_grid_size = map_obj.map_size
+		self.tile_size = map_obj.tile_size
 
 		# Initialize Optional Data Members
 		self.offset_x, self.offset_y = (0,0)
@@ -223,24 +259,6 @@ class World:
 
 
 	# Methods
-	def fill(self, default_tile):
-		"""Fill a world's map with the passed default tile."""
-		self.map = [default_tile for i in range(self.world_grid_size[0] * self.world_grid_size[1])]
-
-	def load(self, path):
-		"""Load a mapfile."""
-		if os.path.exists(path):
-			# Get JSON Data
-			data = json.load(open(path))
-			# Get Map Data
-			map_name = data["layers"][0]["name"]
-			map_data = data["layers"][0]["data"]
-			map_height = data["layers"][0]["height"]
-			map_width = data["layers"][0]["width"]
-
-		else:
-			logging.error("Map File Load Failed: '" + str(path) + "'.")
-
 	def move(self, direction, speed):
 		"""Move the view camera by the specified direction and pixel speed."""
 		if direction == UP: self._move_up(speed)
@@ -255,9 +273,7 @@ class World:
 		to the screen at the specified FPS.
 
 		"""
-		# Hover Tile
-		hover_tile = Tile('assets/dark_grass.png', 64)
-
+		
 		# Main Game Loop
 		while self.done == False:			
 			# Check for Events
@@ -285,19 +301,20 @@ class World:
 			# Clear the Screen
 			self.screen.fill(self.background_color)
 
-			# Hover Tile
-			mos_x, mos_y = self.get_tile(pygame.mouse.get_pos())
-				
 			# Draw all Sprites
 			for y in range(self.world_grid_size[1]):
 				for x in range(self.world_grid_size[0]):
-					draw_tile = self.map[self._get_index(x,y)]
+					draw_tile = self.map_obj.map_data[self._get_index(x,y)]
 					x_loc = x*self.tile_size + self.offset_x
 					y_loc = y*self.tile_size + self.offset_y
-					if not (mos_x == x and mos_y == y):
-						draw_tile.render(self.screen, (x_loc, y_loc))
-					else:
-						hover_tile.render(self.screen, (x_loc, y_loc))
+					draw_tile.render(self.screen, (x_loc, y_loc))
+
+			# Hover Tile
+			mos_x, mos_y = self.get_tile(pygame.mouse.get_pos())
+
+			rect = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA, 32)
+			rect.fill((23, 100, 255, 50))
+			self.screen.blit(rect, (mos_x*self.tile_size, mos_y*self.tile_size))
 			
 			# Update Display
 			pygame.display.flip()
@@ -309,8 +326,6 @@ class World:
 
 # Unit Test
 if __name__ == "__main__":
-	world = World((640,640), (16,16), 64, 'assets/icon.png')
-	world.set_title("PyGame Tiler - Test Window")
-	world.fill(Tile('assets/grass.png', 64))
-	world.load('map.json')
-	#world.run()
+	map_obj = Map('map.json')
+	world = World((640,640), map_obj, 'assets/icon.png')
+	world.run()
