@@ -94,6 +94,10 @@ class Map:
 		else:
 			logging.error("Map File Load Failed: '" + str(path) + "'.")
 
+	def get_index(self, x, y, world_grid_size):
+		"""Returns the map list index for a given (x,y) location on the grid."""
+		return x + world_grid_size[0] * ( world_grid_size[1] - y - 1 ) - 1
+
 	def load(self, path):
 		# Get JSON Data
 		data = json.load(open(path))
@@ -108,8 +112,15 @@ class Map:
 			self.tile_list.append( Tile(json_tile["image"], 56) )
 		# Make Map
 		self.map_data = []
-		for tile_number in self.raw_data:
-			self.map_data.append ( self.tile_list[tile_number-1] )
+		counter = 0
+
+		self.fill(None)
+
+		# What a hack
+		for y in range(self.map_size[1]):
+			for x in range(self.map_size[0]):
+				self.map_data[self.get_index(x,y,self.map_size)] = self.tile_list[ self.raw_data[counter] -1 ]
+				counter = counter + 1
 
 	def fill(self, default_tile):
 		"""Fill a world's map with the passed default tile."""
@@ -327,6 +338,6 @@ class World:
 
 # Unit Test
 if __name__ == "__main__":
-	map_obj = Map('map.json')
-	world = World((640,640), map_obj, 'assets/icon.png')
+	map_obj = Map('map2.json')
+	world = World((560,560), map_obj, 'assets/icon.png')
 	world.run()

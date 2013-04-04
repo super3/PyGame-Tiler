@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="56" tileheight="56">
+ <tileset firstgid="1" name="308" tilewidth="56" tileheight="56">
+  <image source="assets/raw/308.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="2" name="309" tilewidth="56" tileheight="56">
+  <image source="assets/raw/309.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="3" name="388" tilewidth="56" tileheight="56">
+  <image source="assets/raw/388.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="4" name="407" tilewidth="56" tileheight="56">
+  <image source="assets/raw/407.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="5" name="451" tilewidth="56" tileheight="56">
+  <image source="assets/raw/451.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="6" name="468" tilewidth="56" tileheight="56">
+  <image source="assets/raw/468.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="7" name="523" tilewidth="56" tileheight="56">
+  <image source="assets/raw/523.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="8" name="530" tilewidth="56" tileheight="56">
+  <image source="assets/raw/530.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="9" name="531" tilewidth="56" tileheight="56">
+  <image source="assets/raw/531.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="10" name="532" tilewidth="56" tileheight="56">
+  <image source="assets/raw/532.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="11" name="533" tilewidth="56" tileheight="56">
+  <image source="assets/raw/533.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="12" name="534" tilewidth="56" tileheight="56">
+  <image source="assets/raw/534.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="13" name="535" tilewidth="56" tileheight="56">
+  <image source="assets/raw/535.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="14" name="536" tilewidth="56" tileheight="56">
+  <image source="assets/raw/536.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="15" name="537" tilewidth="56" tileheight="56">
+  <image source="assets/raw/537.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="16" name="572" tilewidth="56" tileheight="56">
+  <image source="assets/raw/572.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="17" name="66" tilewidth="56" tileheight="56">
+  <image source="assets/raw/66.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="18" name="74" tilewidth="56" tileheight="56">
+  <image source="assets/raw/74.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="19" name="75" tilewidth="56" tileheight="56">
+  <image source="assets/raw/75.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="20" name="78" tilewidth="56" tileheight="56">
+  <image source="assets/raw/78.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="21" name="80" tilewidth="56" tileheight="56">
+  <image source="assets/raw/80.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="22" name="83" tilewidth="56" tileheight="56">
+  <image source="assets/raw/83.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="23" name="84" tilewidth="56" tileheight="56">
+  <image source="assets/raw/84.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="24" name="157" tilewidth="56" tileheight="56">
+  <image source="assets/raw/157.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="25" name="160" tilewidth="56" tileheight="56">
+  <image source="assets/raw/160.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="26" name="199" tilewidth="56" tileheight="56">
+  <image source="assets/raw/199.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="27" name="216" tilewidth="56" tileheight="56">
+  <image source="assets/raw/216.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="28" name="235" tilewidth="56" tileheight="56">
+  <image source="assets/raw/235.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <tileset firstgid="29" name="261" tilewidth="56" tileheight="56">
+  <image source="assets/raw/261.png" trans="ff00ff" width="56" height="56"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="10" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxdkEsOgCAMRNEFIj/dEDXx/ue0JK/JxMULdNppKTGEUIxkRCMbpzHQGvo8d/JDPIV8F18UvXImYdbcxiZaobf7VuNh7mJc1A9Y0V5qhszxes8f0tff5jP/3khcf7tk2f3kniTu9NJ9C3/WyPs/Jjy+u+fn/QOsbQS1
+  </data>
+ </layer>
+</map>
