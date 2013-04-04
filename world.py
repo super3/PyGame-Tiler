@@ -66,6 +66,7 @@ class Tile(pygame.sprite.Sprite):
 
 		# Check Image Dimensions
 		if not self.image.get_size() == (check_size, check_size): 
+			print(self.image.get_size())
 			raise ValueError("Invalid image size.")
 
 	def render(self, screen, loc):

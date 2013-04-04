@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="56" tileheight="56">
+ <tileset firstgid="1" name="grass" tilewidth="56" tileheight="56">
+  <image source="assets/grass.png" width="168" height="112"/>
+  <tile id="0">
+   <properties>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="7" name="road" tilewidth="56" tileheight="56">
+  <image source="assets/road.png" trans="ff00ff" width="168" height="168"/>
+  <tile id="1">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="16" name="other" tilewidth="56" tileheight="56">
+  <image source="assets/other.png" trans="ff00ff" width="168" height="56"/>
+  <terraintypes>
+   <terrain name="mountain" tile="2"/>
+  </terraintypes>
+  <tile id="1" terrain="0,0,0,0">
+   <properties>
+    <property name="type" value="tree"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="type" value="mountain"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="10" height="10">
+  <data encoding="base64" compression="zlib">
+   eJx1UFsOgCAM20DUBB/Z7n9YZtIllehHA6yllJqIaKAGjPaOdcG8AgpO6fzwK90z8uO1kOYM3ORbJ78e2OF7BC7oHeiYbcjI76Y++UY5+I8Kbs7syJrz8tGLIhv31KA14k3ePWZPfxix3gNL
+  </data>
+ </layer>
+</map>
