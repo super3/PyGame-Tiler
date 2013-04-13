@@ -105,7 +105,7 @@ class Map:
 		self.map_name = data["layers"][0]["name"]
 		self.raw_data = data["layers"][0]["data"]
 		self.map_size = (data["layers"][0]["height"], data["layers"][0]["width"])
-		self.tile_size = data["tileheight"] # we assume tile is square
+		self.tile_size = (data["tilewidth"], data["tileheight"]) # we assume tile is square
 		# Get Tiles
 		self.tile_list = []
 		for json_tile in data["tilesets"]: 
@@ -137,6 +137,8 @@ class World:
 	Data members:
 	screen_size 	 -- The pixel dimension of the screen. (2-tuple)
 	map_obj          -- Contains world dimension, tile info, and everything else.
+	world_grid_size  -- The grid dimensions of the world.
+	tile_size        -- The pixel dimensions of a grid square.
 
 	offset_x 	 	 -- The x offset for the screen display. For background scrolling.
 	offset_y 	 	 -- The y offset for the screen display. For background scrolling.
@@ -245,7 +247,7 @@ class World:
 
 	def _move_down(self, speed = 1):
 		"""Move the view window down by the speed (default 1px)."""
-		if self.offset_y - speed > -(self.world_grid_size[1]*self.tile_size - self.screen_size[1]):
+		if self.offset_y - speed > -(self.world_grid_size[1]*self.tile_size[1] - self.screen_size[1]):
 			self.offset_y -= speed
 
 	def _move_left(self, speed = 1):
@@ -255,7 +257,7 @@ class World:
 
 	def _move_right(self, speed = 1):
 		"""Move the view window right by the speed (default 1px)."""
-		if self.offset_x - speed > -(self.world_grid_size[0]*self.tile_size - self.screen_size[0]):
+		if self.offset_x - speed > -(self.world_grid_size[0]*self.tile_size[0] - self.screen_size[0]):
 			self.offset_x -= speed
 
 
@@ -265,8 +267,8 @@ class World:
 		return x + self.world_grid_size[0] * ( self.world_grid_size[1] - y - 1 ) - 1
 	def get_tile(self, pos):
 		"""Returns the (x,y) location of a tile for the given mouse location."""
-		x = (pos[0]+abs(self.offset_x))/self.tile_size
-		y = (pos[1]+abs(self.offset_y))/self.tile_size
+		x = (pos[0]+abs(self.offset_x))/self.tile_size[0]
+		y = (pos[1]+abs(self.offset_y))/self.tile_size[1]
 		return (int(x), int(y))
 
 
@@ -317,16 +319,16 @@ class World:
 			for y in range(self.world_grid_size[1]):
 				for x in range(self.world_grid_size[0]):
 					draw_tile = self.map_obj.map_data[self._get_index(x,y)]
-					x_loc = x*self.tile_size + self.offset_x
-					y_loc = y*self.tile_size + self.offset_y
+					x_loc = x*self.tile_size[0] + self.offset_x
+					y_loc = y*self.tile_size[1] + self.offset_y
 					draw_tile.render(self.screen, (x_loc, y_loc))
 
 			# Hover Tile
 			mos_x, mos_y = self.get_tile(pygame.mouse.get_pos())
 
-			rect = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA, 32)
+			rect = pygame.Surface((self.tile_size[0], self.tile_size[1]), pygame.SRCALPHA, 32)
 			rect.fill((23, 100, 255, 50))
-			self.screen.blit(rect, (mos_x*self.tile_size, mos_y*self.tile_size))
+			self.screen.blit(rect, (mos_x*self.tile_size[0], mos_y*self.tile_size[1]))
 			
 			# Update Display
 			pygame.display.flip()

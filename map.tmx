@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
 <map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="56" tileheight="56">
  <tileset firstgid="1" name="grass" tilewidth="56" tileheight="56">
-  <image source="assets/grass.png" width="168" height="112"/>
+  <image source="assets/tilesets/grass.png" width="168" height="112"/>
   <tile id="0">
    <properties>
     <property name="type" value="grass"/>
@@ -34,7 +35,7 @@
   </tile>
  </tileset>
  <tileset firstgid="7" name="road" tilewidth="56" tileheight="56">
-  <image source="assets/road.png" trans="ff00ff" width="168" height="168"/>
+  <image source="assets/tilesets/road.png" trans="ff00ff" width="168" height="168"/>
   <tile id="1">
    <properties>
     <property name="type" value="road"/>
@@ -72,7 +73,7 @@
   </tile>
  </tileset>
  <tileset firstgid="16" name="other" tilewidth="56" tileheight="56">
-  <image source="assets/other.png" trans="ff00ff" width="168" height="56"/>
+  <image source="assets/tilesets/other.png" trans="ff00ff" width="168" height="56"/>
   <terraintypes>
    <terrain name="mountain" tile="2"/>
   </terraintypes>
@@ -88,8 +89,17 @@
   </tile>
  </tileset>
  <layer name="Tile Layer 1" width="10" height="10">
-  <data encoding="base64" compression="zlib">
-   eJx1UFsOgCAM20DUBB/Z7n9YZtIllehHA6yllJqIaKAGjPaOdcG8AgpO6fzwK90z8uO1kOYM3ORbJ78e2OF7BC7oHeiYbcjI76Y++UY5+I8Kbs7syJrz8tGLIhv31KA14k3ePWZPfxix3gNL
-  </data>
+  <data encoding="csv">
+17,1,3,17,1,3,18,3,4,17,
+3,3,1,18,1,3,1,17,6,3,
+18,17,3,17,3,17,3,2,3,18,
+13,15,3,3,3,3,1,17,11,8,
+6,12,14,15,18,18,11,14,7,4,
+18,17,3,12,14,14,7,5,3,17,
+17,1,3,1,5,18,17,3,17,18,
+2,18,17,2,1,3,18,3,1,6,
+18,3,4,5,2,17,1,6,17,3,
+4,17,6,3,3,3,3,3,3,3
+</data>
  </layer>
 </map>
